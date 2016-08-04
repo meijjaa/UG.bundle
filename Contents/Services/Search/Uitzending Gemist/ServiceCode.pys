@@ -43,11 +43,20 @@ def Search(query):
 			thumbsrc=''
 			#Log('No thumb available')
 	
+		try:
+			dt = episodeData.find('h5').text.split(u' \xb7 ')[0].replace('mrt', 'mar').replace('okt', 'oct')
+			from datetime import datetime
+			airdate = datetime.strptime(dt[3:], '%d %b %Y %H:%M')
+			Log('airdate: ' + str(airdate))
+		except:
+			airdate = datetime(1900, 1 , 1)
+
 		oc.add(VideoClipObject(
 			url = episodeurl,
 			title = episodetitle,
 			summary = summary,
-			thumb = thumbsrc
+			thumb = thumbsrc,
+			originally_available_at = airdate
 		))
 
 	return oc

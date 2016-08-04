@@ -1,7 +1,13 @@
+import lxml
+import urllib2
+from datetime import datetime
+
 TITLE = 'NPO Uitzending Gemist'
 BASE_URL = 'http://www.npo.nl/uitzending-gemist'
 ROOT_URL = 'http://www.npo.nl'
+HOST = 'www.npo.nl'
 EPISODE_URL = '%s/afleveringen/%%s' % BASE_URL
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1'
 
 ####################################################################################################
 def Start():
@@ -11,7 +17,7 @@ def Start():
 
 	ObjectContainer.title1 = TITLE
 	HTTP.CacheTime = CACHE_1HOUR
-	HTTP.Headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1'
+	HTTP.Headers['User-Agent'] = USER_AGENT
 	HTTP.Headers['Cookie'] = 'npo_cc=30'
 
 ####################################################################################################
@@ -61,7 +67,7 @@ def Tips(title):
 		except:
 			thumbsrc=''
 			#Log('No thumb available')
-		
+
 		#Log("uzgv3: located item with Url " + url)
 		oc.add(VideoClipObject(
 			url = url,
@@ -128,7 +134,7 @@ def Viewed(title):
 		except:
 			thumbsrc=''
 			#Log('No thumb available')
-		
+
 		#Log("uzgv3: located item with Url " + url)
 		oc.add(VideoClipObject(
 			url = url,
@@ -172,7 +178,7 @@ def BestProgr(title):
 		except:
 			thumbsrc=''
 			#Log('No thumb available')
-		
+
 		#Log("uzgv3: located item with Url " + url)
 		oc.add(VideoClipObject(
 			url = url,
@@ -216,35 +222,35 @@ def AtoZ(title):
 	oc = ObjectContainer(title2=title, no_cache=True)
 	Log("uzgv3: Loading a-z menu")
 	
-	letterUrl = ROOT_URL + '/a-z'
+	letterUrl = ROOT_URL + '/a-z/'
 
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s?type=program&av_type=video' % (letterUrl), title='#'), title='#'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/a?type=program&av_type=video' % (letterUrl), title='A'), title='A'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/b?type=program&av_type=video' % (letterUrl), title='B'), title='B'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/c?type=program&av_type=video' % (letterUrl), title='C'), title='C'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/d?type=program&av_type=video' % (letterUrl), title='D'), title='D'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/e?type=program&av_type=video' % (letterUrl), title='E'), title='E'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/f?type=program&av_type=video' % (letterUrl), title='F'), title='F'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/g?type=program&av_type=video' % (letterUrl), title='G'), title='G'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/h?type=program&av_type=video' % (letterUrl), title='H'), title='H'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/i?type=program&av_type=video' % (letterUrl), title='I'), title='I'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/j?type=program&av_type=video' % (letterUrl), title='J'), title='J'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/k?type=program&av_type=video' % (letterUrl), title='K'), title='K'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/l?type=program&av_type=video' % (letterUrl), title='L'), title='L'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/m?type=program&av_type=video' % (letterUrl), title='M'), title='M'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/n?type=program&av_type=video' % (letterUrl), title='N'), title='N'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/o?type=program&av_type=video' % (letterUrl), title='O'), title='O'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/p?type=program&av_type=video' % (letterUrl), title='P'), title='P'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/q?type=program&av_type=video' % (letterUrl), title='Q'), title='Q'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/r?type=program&av_type=video' % (letterUrl), title='R'), title='R'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/s?type=program&av_type=video' % (letterUrl), title='S'), title='S'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/t?type=program&av_type=video' % (letterUrl), title='T'), title='T'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/u?type=program&av_type=video' % (letterUrl), title='U'), title='U'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/v?type=program&av_type=video' % (letterUrl), title='V'), title='V'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/w?type=program&av_type=video' % (letterUrl), title='W'), title='W'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/x?type=program&av_type=video' % (letterUrl), title='X'), title='X'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/y?type=program&av_type=video' % (letterUrl), title='Y'), title='Y'))
-	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url='%s/z?type=program&av_type=video' % (letterUrl), title='Z'), title='Z'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + '#', title='#'), title='#'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'a', title='A'), title='A'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'b', title='B'), title='B'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'c', title='C'), title='C'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'd', title='D'), title='D'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'e', title='E'), title='E'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'f', title='F'), title='F'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'g', title='G'), title='G'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'h', title='H'), title='H'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'i', title='I'), title='I'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'j', title='J'), title='J'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'k', title='K'), title='K'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'l', title='L'), title='L'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'm', title='M'), title='M'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'n', title='N'), title='N'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'o', title='O'), title='O'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'p', title='P'), title='P'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'q', title='Q'), title='Q'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'r', title='R'), title='R'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 's', title='S'), title='S'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 't', title='T'), title='T'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'u', title='U'), title='U'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'v', title='V'), title='V'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'w', title='W'), title='W'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'y', title='X'), title='X'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'x', title='Y'), title='Y'))
+	oc.add(DirectoryObject(key=Callback(BrowseResultsByPage, url=letterUrl + 'z', title='Z'), title='Z'))
 	return oc
 	
 
@@ -253,8 +259,11 @@ def AtoZ(title):
 ####################################################################################################
 @route('/video/uzg3/browse/day', page=int)
 def BrowseByDay(title, url, page=1):
+	if page > 1:
+		pageurl = '%s?page=%d' % (url, page)
+	else:
+		pageurl = url
 
-	pageurl = '%s&page=%d' % (url, page)
 	oc = ObjectContainer(title2=title, no_cache=True)
 
 	try:
@@ -283,7 +292,7 @@ def BrowseByDay(title, url, page=1):
 		except:
 			thumbsrc=''
 			Log('No thumb available')
-	
+
 		oc.add(VideoClipObject(
 			url = episodeurl,
 			title = episodetitle,
@@ -304,57 +313,104 @@ def BrowseByDay(title, url, page=1):
 
 	return oc
 
+def GetPagedData(url , page, count, oc):
+	htmlParser = lxml.etree.HTMLParser()
+	headers = {
+		'Accept': 'text/html, */*; q=0.01',
+		'Accept-Encoding': 'gzip, deflate',
+		"Accept-Language": "en-US,en;q=0.5",
+		'User-Agent': USER_AGENT
+	}
+
+	req = urllib2.Request(url=url, headers=headers)
+	r = urllib2.urlopen(req)
+	html = lxml.etree.parse(r, htmlParser)
+	m = html.xpath('//meta[@name="csrf-token"]')[0]
+	csrf =  m.attrib['content']
+	Log('Got csrf-token: %s' % csrf)
+	m = html.xpath('//div[@class="search-results-list"]')[0]
+	pages =  int(m.attrib['data-pages'])
+	Log('Available pages: %d' % pages)
+
+	if page > 1:
+		page = page * count - 1
+	if page + count < pages:
+		pages = page + count
+
+	headers = {
+		'Accept': 'text/html, */*; q=0.01',
+		'Accept-Encoding': 'gzip, deflate',
+		"Accept-Language": "en-US,en;q=0.5",
+		'Host' : HOST,
+		'User-Agent': USER_AGENT,
+		'Referer': url,
+		'X-Requested-With': 'XMLHttpRequest',
+		'X-CSRF-Token': csrf
+	}
+
+	ret = 0
+	while page < pages:
+		if page > 1:
+			pageurl = '%s?page=%d' % (url, page)
+		else:
+			pageurl = url
+		Log('Requesting %s ' % pageurl)
+		page += 1
+
+		try:
+			req = urllib2.Request(url = pageurl, headers=headers)
+			r = urllib2.urlopen(req)
+			html = lxml.etree.parse(r, htmlParser)
+
+			for episode in html.xpath('//div[@class="big-list-item list-item non-responsive row-fluid"]'):
+				try:
+					episodeData=episode.find('div[@class="span8"]/a')
+					episodetitle=episodeData.find('h4').text.replace('  ', ' ').strip()
+				except:
+					return
+
+				if len(episodetitle) < 1:
+					return
+
+				try:
+					summary=episodeData.find('p').text.strip()
+				except:
+					summary=''
+				programurl = '%s%s' % (ROOT_URL, episodeData.get('href'))
+				try:
+					thumb = episode.find('div[@class="span4"]/div/a')
+					thumbimg=thumb.find('img')
+					thumbsrc=thumbimg.get('src')
+					if(not thumbsrc.startswith('http:') and len(thumbsrc) > 0):
+						thumbsrc='http:%s' % (thumbsrc)
+				except:
+					thumbsrc=''
+
+				oc.add(DirectoryObject(
+					key=Callback(BrowseProgramm, url=programurl, title=episodetitle),
+					title = episodetitle,
+					summary = summary,
+					thumb = thumbsrc
+				))
+			ret += 1
+		except:
+			break
+
+	return ret
+
+
 #programmas results
 ####################################################################################################
 @route('/video/uzg3/browse/searchpage', page=int)
 def BrowseResultsByPage(title, url, page=1):
+	oc = ObjectContainer(title2=title, no_cache=True)#, view_group='List'
 
-	pageurl = '%s&page=%d' % (url, page)
-	Log(pageurl)
-	oc = ObjectContainer(title2=title, no_cache=True)
-
-	try:
-		html = HTML.ElementFromURL(pageurl)
-	except:
-		return ObjectContainer(header="Error", message="Er ging iets fout bij het ophalen van data")
-
-	element = html.xpath('//div[@class="search-results"]/div')[:10][0]
-	Log(element)
-		
-	for episode in html.xpath('//div[@class="search-results"]/div')[:10]:
-		episodeData = episode.find('div[@class="span8"]/a')
-		episodetitle=episodeData.find('h4').text.replace('  ', ' ').strip()
-		Log(episodetitle)
-		try:
-			summary=episodeData.find('p').text.strip()
-		except:
-			summary=''
-		Log(summary)
-		programurl = '%s%s' % (ROOT_URL, episodeData.get('href'))
-		try:
-			thumb = episode.find('div[@class="span4"]/div/a')
-			thumbimg=thumb.find('img')
-			thumbsrc=thumbimg.get('src')
-			if(not thumbsrc.startswith('http:')):
-				thumbsrc='http:%s' % (thumbsrc)
-			Log(thumbsrc)
-		except:
-			thumbsrc=''
-			Log('No thumb available')
-	
-		oc.add(DirectoryObject(
-			key=Callback(BrowseProgramm, url=programurl, title=episodetitle),
-			title = episodetitle,
-			summary = summary,
-			thumb = thumbsrc
-		))
-
+	ret = GetPagedData(url, page, 3, oc)
+	Log('ret %d' % ret)
 	if len(oc) < 1:
 		return ObjectContainer(header="Geen programma's", message="Er staan voor deze opdracht nog geen programma's op Uitzending Gemist")
 
-	next_page = html.xpath('//a[text()="Volgende"]')
-
-	if len(oc) >= 10:
+	if ret == 3:
 		oc.add(NextPageObject(
 			key = Callback(BrowseResultsByPage, title=title, url=url, page=page+1),
 			title = 'Meer...'
@@ -368,7 +424,7 @@ def BrowseResultsByPage(title, url, page=1):
 def BrowseProgramm(title, url):
 
 	pageurl = '%s' % (url)
-	oc = ObjectContainer(title2=title, no_cache=True)
+	oc = ObjectContainer(title2=title, no_cache=True) #, view_group='List'
 
 	try:
 		html = HTML.ElementFromURL(pageurl)
@@ -383,7 +439,6 @@ def BrowseProgramm(title, url):
 			summary=episodeData.find('p').text.strip()
 		except:
 			summary=''
-		#Log(summary)
 		episodeurl = '%s%s' % (ROOT_URL, episodeData.get('href'))
 		try:
 			thumb = episode.find('div[@class="span4"]/div/a')
@@ -397,18 +452,27 @@ def BrowseProgramm(title, url):
 			episodestatus=thumb.find('div').get('class')
 			thumbsrc=''
 			Log('No thumb available')
+
+		try:
+			dt = episodeData.find('h5').text.split(u' \xb7 ')[0].replace('mrt', 'mar').replace('okt', 'oct')
+			from datetime import datetime
+			airdate = datetime.strptime(dt[3:], '%d %b %Y %H:%M')
+			Log('airdate: ' + str(airdate))
+		except:
+			airdate = datetime(1900, 1 , 1)
+
 		if(episodestatus=='program-not-available'):
 			Log(episodestatus)
 		else:
+			Log('Add oc ' + episodetitle)
 			oc.add(VideoClipObject(
 				url = episodeurl,
 				title = episodetitle,
 				summary = summary,
-				thumb = thumbsrc
+				thumb = thumbsrc,
+				originally_available_at = airdate
 			))
-
 	if len(oc) < 1:
 		return ObjectContainer(header="Geen afleveringen", message="Er staan voor deze serie nog geen afleveringen op Uitzending Gemist")
-
 
 	return oc
