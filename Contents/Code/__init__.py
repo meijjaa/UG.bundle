@@ -328,12 +328,9 @@ def GetPagedData(url , page, count, oc):
 	m = html.xpath('//meta[@name="csrf-token"]')[0]
 	csrf =  m.attrib['content']
 	Log('Got csrf-token: %s' % csrf)
-	m = html.xpath('//div[@class="search-results-list"]')[0]
-	pages =  int(m.attrib['data-pages'])
+	pages = int(html.xpath('//div[@class="search-results-list"]/@data-pages')[0])
 	Log('Available pages: %d' % pages)
 
-	if page > 1:
-		page = page * count - 1
 	if page + count < pages:
 		pages = page + count
 
@@ -365,7 +362,7 @@ def GetPagedData(url , page, count, oc):
 			for episode in html.xpath('//div[@class="big-list-item list-item non-responsive row-fluid"]'):
 				try:
 					episodeData=episode.find('div[@class="span8"]/a')
-					episodetitle=episodeData.find('h4').text.replace('  ', ' ').strip()
+					episodetitle=episodeData.findtext('h4').replace('  ', ' ').strip()
 				except:
 					return
 
@@ -373,7 +370,7 @@ def GetPagedData(url , page, count, oc):
 					return
 
 				try:
-					summary=episodeData.find('p').text.strip()
+					summary=episodeData.findtext('p').strip()
 				except:
 					summary=''
 				programurl = '%s%s' % (ROOT_URL, episodeData.get('href'))
@@ -405,14 +402,14 @@ def GetPagedData(url , page, count, oc):
 def BrowseResultsByPage(title, url, page=1):
 	oc = ObjectContainer(title2=title, no_cache=True)#, view_group='List'
 
-	ret = GetPagedData(url, page, 3, oc)
-	Log('ret %d' % ret)
-	if len(oc) < 1:
+	ret = GetPagedData(url, page, 4, oc)
+
+	if ret < 1:
 		return ObjectContainer(header="Geen programma's", message="Er staan voor deze opdracht nog geen programma's op Uitzending Gemist")
 
-	if ret == 3:
+	if ret == 4:
 		oc.add(NextPageObject(
-			key = Callback(BrowseResultsByPage, title=title, url=url, page=page+1),
+			key = Callback(BrowseResultsByPage, title=title, url=url, page=page+4),
 			title = 'Meer...'
 		))
 
@@ -423,23 +420,35 @@ def BrowseResultsByPage(title, url, page=1):
 @route('/video/uzg3/browse/programm')
 def BrowseProgramm(title, url):
 
-	pageurl = '%s' % (url)
-	oc = ObjectContainer(title2=title, no_cache=True) #, view_group='List'
+	oc = ObjectContainer(title2=title, no_cache=True)
 
 	try:
-		html = HTML.ElementFromURL(pageurl)
+		html = HTML.ElementFromURL(url)
 	except:
 		return ObjectContainer(header="Error", message="Er ging iets fout bij het ophalen van data")
 
+	nitems = html.xpath('//div[@class="search-results"]/@data-num-found')[0]
+	pageurl = url + '/search?media_type=broadcast&start_date=&end_date=&start=0&rows=' + nitems
+	Log('Page url: ' + pageurl)
+	html = HTML.ElementFromURL(pageurl)
+
 	for episode in html.xpath('//div[@class="list-item non-responsive row-fluid"]'):
 		episodeData = episode.find('div[@class="span8"]/a')
-		episodetitle=episodeData.find('h4').text.replace('  ', ' ').strip()
+		episodetitle=episodeData.findtext('h4').replace('  ', ' ').strip()
 		Log(episodetitle)
+
+		unavailable = episode.findtext('.//div[@class="not-available-overlay"]')
+		if unavailable:
+			Log(unavailable)
+			continue
+
 		try:
-			summary=episodeData.find('p').text.strip()
+			summary=episodeData.findtext('p').strip()
 		except:
 			summary=''
+
 		episodeurl = '%s%s' % (ROOT_URL, episodeData.get('href'))
+
 		try:
 			thumb = episode.find('div[@class="span4"]/div/a')
 			episodestatus=''
@@ -449,29 +458,26 @@ def BrowseProgramm(title, url):
 				thumbsrc='http:%s' % (thumbsrc)
 			Log(thumbsrc)
 		except:
-			episodestatus=thumb.find('div').get('class')
 			thumbsrc=''
 			Log('No thumb available')
 
 		try:
-			dt = episodeData.find('h5').text.split(u' \xb7 ')[0].replace('mrt', 'mar').replace('okt', 'oct')
+			dt = episodeData.findtext('h5').split(u' \xb7 ')[0].replace('mrt', 'mar').replace('mei', 'may').replace('okt', 'oct')
 			from datetime import datetime
 			airdate = datetime.strptime(dt[3:], '%d %b %Y %H:%M')
+			episodetitle = '%s [%s]' % (episodetitle, airdate)
 			Log('airdate: ' + str(airdate))
 		except:
 			airdate = datetime(1900, 1 , 1)
 
-		if(episodestatus=='program-not-available'):
-			Log(episodestatus)
-		else:
-			Log('Add oc ' + episodetitle)
-			oc.add(VideoClipObject(
-				url = episodeurl,
-				title = episodetitle,
-				summary = summary,
-				thumb = thumbsrc,
-				originally_available_at = airdate
-			))
+		Log('Add oc ' + episodetitle)
+		oc.add(VideoClipObject(
+			url = episodeurl,
+			title = episodetitle,
+			summary = summary,
+			thumb = thumbsrc,
+			originally_available_at = airdate
+		))
 	if len(oc) < 1:
 		return ObjectContainer(header="Geen afleveringen", message="Er staan voor deze serie nog geen afleveringen op Uitzending Gemist")
 
